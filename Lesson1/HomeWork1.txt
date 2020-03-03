@@ -1,0 +1,24 @@
+Ответы:
+Задание 3: Установить утилиты для гостевой ОС вручную и написать команды для
+-- монтирование оптического диска с guest additions
+	sudo mkdir /media/fpolyakov/additions (создание директории, куда будет монтироваться диск)
+	sudo mount /dev/sr0 /media/fpolyakov/additions (монтирование диска)
+-- запуска установки virtualbox гостевых дополнений
+	сначала перейем в директорию куда монтровался диск с гостевыми дополнениями 
+	cd /media/fpolyakov/additions
+	запускаем установку при помощи autorun.sh
+	sudo ./autorun.sh
+-- установка недостоющих зависимостей gcc make perl
+	sudo apt-get install gcc make perl
+
+Задание 5: Настроить ssh соединение с хостовой ОС на гостевую ОС с использованием ssh ключа и написать команды для:
+-- установки ssh сервер
+	sudo apt-get install openssh-server
+-- открытие справки для команды ufw
+	man ufw
+-- включение службы ssh сервера
+	sudo systemctl star sshd
+-- добавления порта 22 в исключения фаервола
+	sudo ufw allow 22
+-- генерации ssh ключа
+	ssh-keygen
