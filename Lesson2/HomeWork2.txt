@@ -13,7 +13,7 @@
 -Просмотрите содержимое созданного файла.
 	fpolyakov@fpolyakov-ubuntu:~/lesson2$ cat file3.txt
 	Smth in first file
-	Smth in second(2) file
+	Smth in second(2) file 
 
 -Переименуйте файл, дав ему новое имя.
 	fpolyakov@fpolyakov-ubuntu:~/lesson2$ mv file3.txt newfile3.txt
@@ -51,7 +51,7 @@
  -rw-r-----   1 fpolyakov fpolyakov       5 мар  4 11:32 .vboxclient-draganddrop.pid
  -rw-r-----   1 fpolyakov fpolyakov       5 мар  4 11:32 .vboxclient-seamless.pid
  -rw-------   1 fpolyakov fpolyakov    7742 мар  4 19:47 .viminfo
- -rw-------   1 fpolyakov fpolyakov       0 мар  4 16:55 .Xauthority
+ -rw-------   1 fpolyakov fpolyakov        0 мар  4 16:55 .Xauthority
  -rw-------   1 fpolyakov fpolyakov   13986 мар  4 16:55 .xsession-errors
 
  Количество скрытых файлов: 12
@@ -59,6 +59,12 @@
 	fpolyakov@fpolyakov-ubuntu:~$ find . -name '.*' -type f | wc
      12      12     223
     В моем случае выводится 12 скрытых файлов
+
+
+upd: правильно вот так: fpolyakov@fpolyakov-ubuntu:~$ find  ~/ -maxdepth 1 -name '.*' | wc
+				или fpolyakov@fpolyakov-ubuntu:~$ find ~/.*[!.] -maxdepth 0 | wc
+				или fpolyakov@fpolyakov-ubuntu:~$ ls -A ~/ | grep '^\.' | wc
+
 
 Задание 5:
 -Попробовать вывести с помощью cat все файлы в директории /etc.
