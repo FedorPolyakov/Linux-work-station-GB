@@ -1,0 +1,133 @@
+Задание1:
+-Написать скрипт, который удаляет из текстового файла пустые строки и заменяет маленькие символы на большие (воспользуйтесь tr или sed). Скрипт должен выводить информацию о том, как его использовать.
+#!/bin/bash
+
+usage(){
+        cat <<-EOF
+
+   This is a script delete empty strings in a file and change lower-case letter to upper-case
+   Usage: $0 [file]
+
+   Example:
+        ./script1.sh testfile.txt
+EOF
+}
+
+if (( $# < 1 )) ; then
+        echo "Error: No file."
+        usage
+        exit 1
+fi
+
+read file <<<$1
+
+sed '/^$/d' $1 | sed 's/.*/\U&/'
+
+Задание2:
+-Определеить, какие ошибки записывается в /var/log/auth.log при попытке неудачной аутентификации пользователя для ssh подключения, для подключения через терминал - ctrl+alt+f3 и для подключения с помощью виртуального терминала (gui приложения). Сделать скрипт мониторинга лога /var/log/auth.log на наличие этих событий, который выводит сообщения о попытке неудачной аутентификации на экран. Проверить скрипт, выполнив ошибочную регистрацию с терминала, с помощью виртуального терминала и через ssh. Скрипт должен выводить информацию о том, как его использовать.
+#!/bin/bash
+
+usage(){
+        cat <<-EOF
+
+   This script shows messages if authorization was failed
+   Usage: $0
+
+   Example:
+        ./findfail.sh
+EOF
+}
+
+tail -f /var/log/auth.log | grep -i 'FAILED LOGIN'
+
+Задание3:
+Написать скрипт, который в указанной с помощью параметра -d директории создает указанные файлы. Если файлы уже существуют, то выводится предупреждения на экран. Если указано несколько директорий, то выводится ошибка с соответствуюзей информацией. Созданным файлам, которые имеют разрешения '.sh' нужно дать права на выполнения. Скрипт должен выводить информацию о том, как его использовать и понятные сообщения об ошибках.
+#!/bin/bash
+
+#echo $@
+#echo $0
+#echo $#
+#echo $1
+#echo $2
+#echo $3
+
+usage(){
+        cat <<EOF
+
+This script create files in a selected directory.
+   Usage: $0 [pattern] [selected directory] [file(s)]
+Options:
+   -d ( pointer to directory )
+ Examples:
+   $0 -d /tmp/newfolder file1
+   $0 -d /tmp/newfolder file1 file2 file.sh
+EOF
+}
+#if ( $1 != '-d') ; then
+#       echo "Error: The first pattern must be '-b'"
+#fi
+
+if (( $# < 3 )) ; then
+        echo "Error: No files for creating.
+        Error's code 1"
+        usage
+        exit 1
+        fi
+
+if [ -d $2 ]
+then
+        echo ""
+else
+        echo "Directory doesn't exist. Error code 2" && exit 2
+fi
+
+
+k=0
+for i in "$@"
+do
+        if [ $i = '-d' ]
+        then
+                let "k = k + 1"
+        fi
+done
+#echo "$k"
+if [ $k != 1 ]
+then
+         echo "Error: Not allow select more then one directory. Error code 3" && exit 3
+fi
+
+DIR=$2
+while [[ $# -gt 0 ]]
+do
+        if [ $1 = '-d' ] ; then
+                shift
+        fi
+        if [ $1 = $DIR ] ; then
+                shift
+        fi
+        case $1 in
+                */*)
+                        echo "Error: Forbidden symbol for file name"
+                        shift
+                        ;;
+        
+                *.sh)
+                        if [ -e $DIR/$1 ] ; then
+                                echo "Error: This file already exists. Error code 4" && exit 4
+                        else
+                                touch $DIR/$1
+                                chmod +x $DIR/$1
+                        fi
+                        shift
+                        ;;
+                *)
+                        if [ -e $DIR/$1 ] ; then
+                                echo "Error: This file already exists. Error code 4" && exit 4
+                        else
+                                touch $DIR/$1
+                        fi
+                        shift
+                        ;;
+        esac
+done
+
