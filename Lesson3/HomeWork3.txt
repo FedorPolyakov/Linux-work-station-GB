@@ -1,0 +1,116 @@
+Ответы на задания третьего урока.
+Задание 1:
+-Создать файл file1 и наполнить его произвольным содержимым.
+	fpolyakov@fpolyakov-ubuntu:~/lesson3$ echo 'Smth in file1' > file1
+-Скопировать его в file2.
+	fpolyakov@fpolyakov-ubuntu:~/lesson3$ cp file1 file2
+-Создать символическую ссылку file3 на file1.
+	fpolyakov@fpolyakov-ubuntu:~/lesson3$ ln -s file1 file3
+-Создать жесткую ссылку file4 на file1.
+	fpolyakov@fpolyakov-ubuntu:~/lesson3$ ln  file1 file4
+-Посмотреть, какие айноды у файлов.
+	fpolyakov@fpolyakov-ubuntu:~/lesson3$ ls -li
+	total 12
+	939547 -rw-rw-r--  2 fpolyakov fpolyakov   14 мар  5 20:41 file1
+	939550 -rw-rw-r--  1 fpolyakov fpolyakov   14 мар  5 20:42 file2
+	939553 lrwxrwxrwx  1 fpolyakov fpolyakov    5 мар  5 20:43 file3 -> file1
+	939547 -rw-rw-r--  2 fpolyakov fpolyakov   14 мар  5 20:41 file4
+-Удалить file1.
+	fpolyakov@fpolyakov-ubuntu:~/lesson3$ rm file1
+-Что стало с остальными созданными файлами?
+-Попробовать вывести их на экран.
+	file2 остался и его можно прочитать(файл остался без изменений). При попытке открыть file3 возникает ошибка что файл не найден. Это произошло из-за того что в inode 3-го файла была ссылка на название первого файла, а он был удален. file4 прочитать можно, у этого файла inode такой же как был и у file1. У 4-го файла хранится ссылка на данные 1-го файла, поэтому его можно прочесть(они были скопированы).
+	fpolyakov@fpolyakov-ubuntu:~/lesson3$ ls -lai
+	total 16
+	925456 drwxrwxr-x  2 fpolyakov fpolyakov 4096 мар  5 20:46 .
+	809819 drwxr-xr-x 20 fpolyakov fpolyakov 4096 мар  5 20:40 ..
+	939550 -rw-rw-r--  1 fpolyakov fpolyakov   14 мар  5 20:42 file2
+	939553 lrwxrwxrwx  1 fpolyakov fpolyakov    5 мар  5 20:43 file3 -> file1 (выделен красным)
+	939547 -rw-rw-r--  1 fpolyakov fpolyakov   14 мар  5 20:41 file4
+
+	fpolyakov@fpolyakov-ubuntu:~/lesson3$ cat file2
+	Smth in file1
+	fpolyakov@fpolyakov-ubuntu:~/lesson3$ cat file3
+	cat: file3: No such file or directory
+	fpolyakov@fpolyakov-ubuntu:~/lesson3$ cat file4
+	Smth in file1
+
+Задание 2:
+-Дать созданным файлам другие, произвольные имена.
+	fpolyakov@fpolyakov-ubuntu:~/lesson3$ mv file2 newfile2
+	fpolyakov@fpolyakov-ubuntu:~/lesson3$ mv file3 thenewfile3
+	fpolyakov@fpolyakov-ubuntu:~/lesson3$ mv file4 itsthefile4
+-Создать новую символическую ссылку.
+	fpolyakov@fpolyakov-ubuntu:~/lesson3$ ln -s newfile2 link4newfile2
+-Переместить ссылки в другую директорию.
+	fpolyakov@fpolyakov-ubuntu:~/lesson3$ mv link4newfile2 links4les3/
+	fpolyakov@fpolyakov-ubuntu:~/lesson3$ mv thenewfile3 links4les3/
+	fpolyakov@fpolyakov-ubuntu:~/lesson3$ mv itsthefile4 links4les3/
+	После перемещения ссылок в другую папку, файл жесткой ссылки по прежнему можно вывести, а символьные ссылки станут недоступными(thenewfile3 до этого уже была недоступна).
+
+Задание 3:
+-Создать два произвольных файла. 
+	fpolyakov@fpolyakov-ubuntu:~/lesson3$ touch firstfile
+	fpolyakov@fpolyakov-ubuntu:~/lesson3$ touch secondfile
+-Первому присвоить права на чтение, запись для владельца и группы, только на чтение для всех.
+	Сначала уберем все права для первого файла
+	fpolyakov@fpolyakov-ubuntu:~/lesson3$ ls -l firstfile
+	-rw-rw-r-- 1 fpolyakov fpolyakov 0 мар  5 21:42 firstfile
+
+	fpolyakov@fpolyakov-ubuntu:~/lesson3$ chmod 000 firstfile (численно)
+	fpolyakov@fpolyakov-ubuntu:~/lesson3$ ls -l firstfile
+	---------- 1 fpolyakov fpolyakov 0 мар  5 21:42 firstfile
+
+	Добавим права на чтение, запись для владельца и группы, только для чтения для всех остальных
+	fpolyakov@fpolyakov-ubuntu:~/lesson3$ chmod ug+rw,o+r firstfile (символьно)
+	fpolyakov@fpolyakov-ubuntu:~/lesson3$ ls -l firstfile
+	-rw-rw-r-- 1 fpolyakov fpolyakov 0 мар  5 21:42 firstfile
+
+-Второму присвоить права на чтение, запись только для владельца. Сделать это в численном и символьном виде.
+	fpolyakov@fpolyakov-ubuntu:~/lesson3$ chmod 600 secondfile
+	то же самое сделать можно в символьном виде:
+	fpolyakov@fpolyakov-ubuntu:~/lesson3$ chmod u=rw-,go=--- secondfile
+
+Задание 4:
+-Создать пользователя, обладающего возможностью выполнять действия от имени суперпользователя.
+	При создании пользователя внесем его в группу
+	fpolyakov@fpolyakov-ubuntu:~$ sudo useradd new_user01 -m -s /bin/bash -G sudo
+	fpolyakov@fpolyakov-ubuntu:~$ sudo passwd new_user01 (здесь зададим пароль для нового пользователя)
+
+Задание 5*:
+-Создать группу developer, несколько пользователей, входящих в эту группу. 
+	root@fpolyakov-ubuntu:/home/fpolyakov# addgroup developer
+	Adding group `developer' (GID 1002) ...
+	Done.
+	root@fpolyakov-ubuntu:/home/fpolyakov# useradd user1 -s /bin/bash -m
+	root@fpolyakov-ubuntu:/home/fpolyakov# useradd user2 -s /bin/bash -m
+	root@fpolyakov-ubuntu:/home/fpolyakov# usermod -aG developer user1
+	root@fpolyakov-ubuntu:/home/fpolyakov# usermod -aG developer user2
+-Создать директорию для совместной работы.
+	root@fpolyakov-ubuntu:/home/fpolyakov# mkdir /mnt/developer
+	root@fpolyakov-ubuntu:/home/fpolyakov# chgrp developer /mnt/developer/
+-Сделать так, чтобы созданные одними пользователями файлы могли изменять другие пользователи этой группы.
+ root@fpolyakov-ubuntu:/home/fpolyakov# chmod g=rws,o= /mnt/developer/
+
+Задание 6*:
+-Создать в директории для совместной работы поддиректорию для обмена файлами, но чтобы удалять файлы могли только их создатели
+	Добавлением sticky bit в директории позволяет удалять файл только тому пользователю, который его создал
+	root@fpolyakov-ubuntu:/home/fpolyakov# mkdir /mnt/developer/tmp/
+	root@fpolyakov-ubuntu:/home/fpolyakov# chmod o+t /mnt/developer/tmp/
+	root@fpolyakov-ubuntu:/home/fpolyakov# su - user2
+	user2@fpolyakov-ubuntu:~$ echo "user2" > /mnt/developer/tmp/user2tmpfile
+	user2@fpolyakov-ubuntu:~$ logout
+	root@fpolyakov-ubuntu:/home/fpolyakov# su - user1
+	user1@fpolyakov-ubuntu:~$ rm /mnt/developer/tmp/user2tmpfile
+	rm: cannot remove '/mnt/developer/tmp/user2tmpfile': Operation not permitted
+Задание 7*:
+-Создать директорию, в которой есть несколько файлов. Сделать так, чтобы открыть файлы можно только, зная имя файла, а через ls список файлов посмотреть нельзя.
+	Изменив пермиссию ugo=wx, т.е. убрав разрешение на чтение, командой ls не получится посмотреть содержимое папки, но, зная точное имя файла, посмотреть содержимое файла возможно
+	root@fpolyakov-ubuntu:/home/fpolyakov# mkdir /mnt/developer/seven/
+	root@fpolyakov-ubuntu:/home/fpolyakov# chmod ugo=wx /mnt/developer/seven/
+	root@fpolyakov-ubuntu:/home/fpolyakov# echo 'seven' > /mnt/developer/seven/file7
+	user1@fpolyakov-ubuntu:~$ ls /mnt/developer/seven/
+	ls: cannot open directory '/mnt/developer/seven/': Permission denied
+	user1@fpolyakov-ubuntu:~$ cat /mnt/developer/seven/file7
+	seven
+
