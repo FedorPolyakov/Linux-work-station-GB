@@ -1,0 +1,96 @@
+Ответы на задания второго урока:
+
+Задание 2: 
+-Выяснить, для чего предназначена команда cat.
+ 	Команда cat предназначена для чтения данных из файла или стандартного вводаи вывода их на экран или в другой файл.
+-Используя данную команду, создайте два файла с данными, а затем объедините их в один.
+	fpolyakov@fpolyakov-ubuntu:~/lesson2$ cat > file1.txt
+	Smth in first file
+	fpolyakov@fpolyakov-ubuntu:~/lesson2$ cat > file2.txt
+	Smth in second(2) file
+	fpolyakov@fpolyakov-ubuntu:~/lesson2$ cat file1.txt file2.txt > file3.txt	
+
+-Просмотрите содержимое созданного файла.
+	fpolyakov@fpolyakov-ubuntu:~/lesson2$ cat file3.txt
+	Smth in first file
+	Smth in second(2) file 
+
+-Переименуйте файл, дав ему новое имя.
+	fpolyakov@fpolyakov-ubuntu:~/lesson2$ mv file3.txt newfile3.txt
+
+Задание 3:
+-Создать несколько файлов.
+	fpolyakov@fpolyakov-ubuntu:~/lesson2$ touch file{01..10}.txt
+
+-Создайте директорию, переместите файл туда.
+	fpolyakov@fpolyakov-ubuntu:~/lesson2$ mkdir newdir1
+	fpolyakov@fpolyakov-ubuntu:~/lesson2$ mv file??.txt newdir1/
+
+-Удалите все созданные в этом и предыдущем задании директории и файлы.
+	fpolyakov@fpolyakov-ubuntu:~/lesson2$ rm *.txt
+	fpolyakov@fpolyakov-ubuntu:~/lesson2$ rm -r newdir1
+
+Задание 4:
+-В ОС Linux скрытыми файлами считаются те, имена которых начинаются с символа “.”. Сколько скрытых файлов в вашем домашнем       каталоге? (Использовать конвейер. Подсказка: для подсчета количества строк можно использовать wc).
+ Зрительно оценить количество скрытых файлов можно при помощи команды:
+ ls -la | grep '^-' (здесь выведется общее количество файлов, включая скрытые)
+ 
+ fpolyakov@fpolyakov-ubuntu:~$ ls -la | grep '^-'
+ -rw-rw-r--   1 fpolyakov fpolyakov 3610277 мар  4 17:32 1.txt
+ -rw-------   1 fpolyakov fpolyakov    1136 мар  4 16:55 .bash_history
+ -rw-r--r--   1 fpolyakov fpolyakov     220 мар  1 19:26 .bash_logout
+ -rw-r--r--   1 fpolyakov fpolyakov    3771 мар  1 19:26 .bashrc
+ -rw-rw-r--   1 fpolyakov fpolyakov   75563 мар  4 17:37 fail.txt
+ -rw-------   1 fpolyakov fpolyakov    5374 мар  4 16:55 .ICEauthority
+ -rw-r--r--   1 fpolyakov fpolyakov     807 мар  1 19:26 .profile
+ -rw-rw-r--   1 fpolyakov fpolyakov     159 мар  4 17:08 scripts.sh
+ -rw-rw-r--   1 fpolyakov fpolyakov 3541680 мар  4 17:37 success.txt
+ -rw-r--r--   1 fpolyakov fpolyakov       0 мар  1 19:35 .sudo_as_admin_successful
+ -rwxrwxr-x   1 fpolyakov fpolyakov      89 мар  4 19:12 test.py
+ -rw-r-----   1 fpolyakov fpolyakov       5 мар  4 11:32 .vboxclient-display.pid
+ -rw-r-----   1 fpolyakov fpolyakov       5 мар  4 11:32 .vboxclient-draganddrop.pid
+ -rw-r-----   1 fpolyakov fpolyakov       5 мар  4 11:32 .vboxclient-seamless.pid
+ -rw-------   1 fpolyakov fpolyakov    7742 мар  4 19:47 .viminfo
+ -rw-------   1 fpolyakov fpolyakov        0 мар  4 16:55 .Xauthority
+ -rw-------   1 fpolyakov fpolyakov   13986 мар  4 16:55 .xsession-errors
+
+ Количество скрытых файлов: 12
+ Команда wc выводит информацию в виде: кол-во строк - кол-во слов - кол-во байт(символов)
+	fpolyakov@fpolyakov-ubuntu:~$ find . -name '.*' -type f | wc
+     12      12     223
+    В моем случае выводится 12 скрытых файлов
+
+
+upd: правильно вот так: fpolyakov@fpolyakov-ubuntu:~$ find  ~/ -maxdepth 1 -name '.*' | wc
+				или fpolyakov@fpolyakov-ubuntu:~$ find ~/.*[!.] -maxdepth 0 | wc
+				или fpolyakov@fpolyakov-ubuntu:~$ ls -A ~/ | grep '^\.' | wc
+
+
+Задание 5:
+-Попробовать вывести с помощью cat все файлы в директории /etc.
+	fpolyakov@fpolyakov-ubuntu:~$ cat /etc/*
+-Направить ошибки в отдельный файл в вашей домашней директории.
+	fpolyakov@fpolyakov-ubuntu:~$ cat /etc/* 2>error5.txt
+-Сколько файлов, которые не удалось посмотреть, оказалось в списке?
+	fpolyakov@fpolyakov-ubuntu:~$ cat error5.txt | wc
+    	128     634    4457
+    Количество ошибок: 128
+
+upd: можно сдеать еще так:
+			find /etc/ -exec cat {} \; 2>/tmp/er
+			less /tmp/er | wc
+
+Задание 6:
+-Запустить в одном терминале программу, в другом терминале посмотреть PID процесса и остановить с помощью kill, посылая разные типы сигналов. Что происходит?
+
+В терминале запускаем бесконечный цикл while чтобы нагрузить систему и увидеть процесс в другом терминале в top
+	fpolyakov@fpolyakov-ubuntu:~$ while true; do true ; done
+ Данный процесс выполняется в bash и поэтому в top bash имеет PID 8105 и загружает процессор на 99.9 %
+ При помощи команды:
+ 	kill -2 8105
+ можно остановить процесс. Данная команда равносильна нажатию клавиш Ctrl+C(^C). В этой команде -2 обозначает сигнал SIGINT. Это самый безобидный сигнал завершения работы процесса, и обозначает прерывание. При этом сигнале процесс правильно завершает свои действия и возвращает управление.
+ Так же есть сигнал -15 (SIGTERM), он так же завершает процесс, обрабатывается программой, поэтому позволяет ей завершить дочерние процессы и освободить все ресурсы. Данный сигнал не смог завершить бесконечный цикл.
+ Сигнал -9 (SIGKILL) завершает процесс, но в отличиии от сигнала -15 обрабатывается ядром. При команде kill -15 8105 завершается процесс бесконечного цикла и терминал закрывается.
+ Сигнал -3 (SIGQUIT) он сообщает программе что нужно завершиться и команда может завершить процесс или проигнорировать сигнал.
+ В нашем случае программа проигнорировала этот сигнал и бесконечный цикл не завершился. Сочетание клавиш Ctrl+/
+
