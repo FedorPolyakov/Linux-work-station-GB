@@ -1,0 +1,27 @@
+1. Написать Dockerfile для сборки образа, который будет запускать контейнер с django приложением, доуступным по ссылке: https://github.com/mtuktarov/linux_stuff/tree/master/django-test-app. Для запуска приложения использовать команду python manage.py runserver 0.0.0.0:8000, где manage.py - это файл из репозитория.
+
+FROM python:alpine
+
+RUN apk update && apk upgrade && apk add git && apk add bash
+
+RUN mkdir -p /lesson/ && cd /lesson/ && git clone https://github.com/mtuktarov/linux_stuff.git ./
+
+RUN cd /lesson/django-test-app
+
+WORKDIR /lesson/django-test-app
+
+RUN pip install -r /lesson/django-test-app/requirements.txt
+
+RUN chmod +x /lesson/django-test-app/manage.py
+
+RUN rm -rf /lesson/django-test-app/requirements.txt
+
+RUN python /lesson/django-test-app/manage.py migrate   #для второго задания
+
+CMD python manage.py runserver 0.0.0.0:8000
+
+команда для запуска контейнара:
+docker run -it -p 1000:8000 fedorpolyakov/gblesson7:my_new_tag1
+
+пул из докер хаба:
+пул на образ в докер хабе: docker pull fedorpolyakov/gblesson7:my_new_tag1
