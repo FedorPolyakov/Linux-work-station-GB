@@ -1,5 +1,8 @@
 1. Написать Dockerfile для сборки образа, который будет запускать контейнер с django приложением, доуступным по ссылке: https://github.com/mtuktarov/linux_stuff/tree/master/django-test-app. Для запуска приложения использовать команду python manage.py runserver 0.0.0.0:8000, где manage.py - это файл из репозитория.
 
+
+This is Dockerfile ->
+
 FROM python:alpine
 
 RUN apk update && apk upgrade && apk add git && apk add bash
